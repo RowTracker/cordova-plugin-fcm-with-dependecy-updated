@@ -1,5 +1,6 @@
 package com.gae.scaffolder.plugin;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -9,8 +10,8 @@ import com.gae.scaffolder.plugin.interfaces.*;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+// import com.google.firebase.iid.FirebaseInstanceId;
+// import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.cordova.CallbackContext;
@@ -179,6 +180,44 @@ public class FCMPlugin extends CordovaPlugin {
 
     public void getToken(final TokenListeners<String, JSONObject> callback) {
         try {
+
+            // ATW refactored to work with new version of FCM
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "getInstanceId failed", task.getException());
+                                try {
+                                    callback.error(exceptionToJson(task.getException()));
+                                }
+                                catch (JSONException jsonErr) {
+                                    Log.e(TAG, "Error when parsing json", jsonErr);
+                                }
+                                return;
+                            }
+
+                            // Get new FCM registration token
+                            String newToken = task.getResult();
+                            Log.i(TAG, "\tToken: " + newToken);
+                            callback.success(newToken);
+                        }
+                    });
+
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            try {
+                                Log.e(TAG, "Error retrieving token: ", e);
+                                callback.error(exceptionToJson(e));
+                            } catch (JSONException jsonErr) {
+                                Log.e(TAG, "Error when parsing json", jsonErr);
+                            }
+                        }
+                    });
+
+            /**
             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                 @Override
                 public void onComplete(Task<InstanceIdResult> task) {
@@ -212,6 +251,7 @@ public class FCMPlugin extends CordovaPlugin {
                     }
                 }
             });
+            */
         } catch (Exception e) {
             Log.w(TAG, "\tError retrieving token", e);
             try {
@@ -224,7 +264,10 @@ public class FCMPlugin extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 try {
-                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                    // ATW removed deprecated call, not worked out relevance of trying to delete an instance
+                    // FirebaseInstanceId.getInstance().deleteInstanceId()
+                    // FirebaseMessaging.getInstance().deleteToken()
+
                     callbackContext.success();
                 } catch (Exception e) {
                     callbackContext.error(e.getMessage());
