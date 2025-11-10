@@ -1,7 +1,7 @@
 buildscript {
     ext {
         // Load system enviroment defined values, or, if unavailable, plugin defaults
-        def ANDROID_GRADLE_TOOLS_VERSION = System.getenv('ANDROID_GRADLE_TOOLS_VERSION') ?: '4.1.0'
+        def ANDROID_GRADLE_TOOLS_VERSION = System.getenv('ANDROID_GRADLE_TOOLS_VERSION') ?: '8.7.3'
         try {
             // Load configuration from install variables (package.json) two directories above
             def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
@@ -23,7 +23,7 @@ buildscript {
     }
     repositories {
         mavenCentral()
-        jcenter()
+  // jcenter() //ATW 29/06/2024 removed jcenter as Android Studio says its deprecated and replaced by mavenCentral
         mavenLocal()
         if (gradleNumberVersion >= 3.4f) {
             google()
@@ -31,18 +31,18 @@ buildscript {
     }
     dependencies {
         // Load system enviroment defined values, or, if unavailable, plugin defaults
-        def ANDROID_GOOGLE_SERVICES_VERSION = System.getenv('ANDROID_GOOGLE_SERVICES_VERSION') ?: '4.3.4'
-        def ANDROID_GRADLE_TOOLS_VERSION = System.getenv('ANDROID_GRADLE_TOOLS_VERSION') ?: '4.1.0'      
+        // def ANDROID_GOOGLE_SERVICES_VERSION = System.getenv('') ?: '4.4.3' // ATW was '4.3.15' // ATW was '4.3.4'
+        def ANDROID_GRADLE_TOOLS_VERSION = System.getenv('ANDROID_GRADLE_TOOLS_VERSION') ?: '8.7.3' // ATW was'4.1.0'      
         try {
             // Load configuration from install variables (package.json) two directories above
             def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
-            ANDROID_GOOGLE_SERVICES_VERSION = PLUGIN_CONFIG.ANDROID_GOOGLE_SERVICES_VERSION
+            // ANDROID_GOOGLE_SERVICES_VERSION = PLUGIN_CONFIG.ANDROID_GOOGLE_SERVICES_VERSION
             ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
         } catch(Exception e0) {
             try {
                 // Load configuration from install variables (package.json) three directories above
                 def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
-                ANDROID_GOOGLE_SERVICES_VERSION = PLUGIN_CONFIG.ANDROID_GOOGLE_SERVICES_VERSION
+                // ANDROID_GOOGLE_SERVICES_VERSION = PLUGIN_CONFIG.ANDROID_GOOGLE_SERVICES_VERSION
                 ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
             } catch(Exception e1) {
                 def WARNING_STYLE = "${(char)27}[33;49"+"m"
@@ -51,24 +51,27 @@ buildscript {
             }
         }
         // Override config with project values if available
-        ANDROID_GOOGLE_SERVICES_VERSION = rootProject.hasProperty('ANDROID_GOOGLE_SERVICES_VERSION') ? rootProject.ext.ANDROID_GOOGLE_SERVICES_VERSION : ANDROID_GOOGLE_SERVICES_VERSION
+        // ANDROID_GOOGLE_SERVICES_VERSION = rootProject.hasProperty('ANDROID_GOOGLE_SERVICES_VERSION') ? rootProject.ext.ANDROID_GOOGLE_SERVICES_VERSION : ANDROID_GOOGLE_SERVICES_VERSION
         ANDROID_GRADLE_TOOLS_VERSION = rootProject.hasProperty('ANDROID_GRADLE_TOOLS_VERSION') ? rootProject.ext.ANDROID_GRADLE_TOOLS_VERSION : ANDROID_GRADLE_TOOLS_VERSION
         // Avoid use "GRADLE_VERSION" because jitpack sets this like a environment variable
         classpath "com.android.tools.build:gradle:${ANDROID_GRADLE_TOOLS_VERSION}"
-        classpath "com.google.gms:google-services:${ANDROID_GOOGLE_SERVICES_VERSION}"
+
+        // 09 Jul 2025 ATW - according to issue 931 in cordova-plugin-firebasex defining google services here is not compatible with android-cordova@14.0.0
+        // so we have moved it to the main gradle build file
+        // classpath "com.google.gms:google-services:${ANDROID_GOOGLE_SERVICES_VERSION}"
     }
 }
 repositories {
     mavenCentral()
-    jcenter()
+  // jcenter() //ATW 29/06/2024 removed jcenter as Android Studio says its deprecated and replaced by mavenCentral
     if (gradleNumberVersion >= 3.4f) {
         google()
     }
 }
 dependencies {
     // Load system enviroment defined values, or, if unavailable, plugin defaults
-    def ANDROID_FCM_VERSION = System.getenv('ANDROID_FCM_VERSION') ?: '21.0.0'
-    def ANDROID_FIREBASE_BOM_VERSION = System.getenv('ANDROID_FIREBASE_BOM_VERSION') ?: '26.0.0'
+    def ANDROID_FCM_VERSION = System.getenv('ANDROID_FCM_VERSION') ?: '24.0.0' // ATW was '21.0.0'
+    def ANDROID_FIREBASE_BOM_VERSION = System.getenv('ANDROID_FIREBASE_BOM_VERSION') ?: '33.1.1' // ATW was'26.0.0'
     try {
         // Load configuration from install variables (package.json) two directories above
         def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
@@ -106,6 +109,9 @@ dependencies {
 }
 // apply plugin: 'com.google.gms.google-services'
 // class must be used instead of id(string) to be able to apply plugin from non-root gradle file
-if (!project.plugins.hasPlugin('com.google.gms.google-services')) {
-    apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
-}
+
+// 09 Jul 2025 ATW - according to issue 931 in cordova-plugin-firebasex defining google services here is not compatible with android-cordova@14.0.0
+// so we have moved it to the main gradle build file
+// if (!project.plugins.hasPlugin('com.google.gms.google-services')) {
+//     apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
+// }

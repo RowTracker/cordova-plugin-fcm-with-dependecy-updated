@@ -52,7 +52,7 @@ Make sure you have ‘google-services.json’ for Android and/or ‘GoogleServic
 |ANDROID_DEFAULT_NOTIFICATION_ICON|@mipmap/ic_launcher|Default notification icon.|
 |ANDROID_FCM_VERSION|21.0.0|Native Firebase Message SDK version.<br>:warning: Replaced by BoM versioning on Gradle >= 3.4.|
 |ANDROID_FIREBASE_BOM_VERSION|26.0.0|[Firebase BoM](https://firebase.google.com/docs/android/learn-more#bom) version.|
-|ANDROID_GOOGLE_SERVICES_VERSION|4.3.4|Native Google Services SDK version.|
+|ANDROID_GOOGLE_SERVICES_VERSION|4.3.4|Native Google Services SDK version.| -- ATW this property has been removed
 |ANDROID_GRADLE_TOOLS_VERSION|4.1.0|Gradle tools version.|
 |IOS_FIREBASE_MESSAGING_VERSION|~> 7.4.0|Native Firebase Message SDK version|
 
@@ -71,12 +71,13 @@ Complete:
 ```sh
 npm install -g cordova@latest # Version 9 or higher required
 npm uninstall @ionic-native/fcm # Ionic support is included and conflicts with @ionic-native's implementation.
+#ATW was  --variable IOS_FIREBASE_MESSAGING_VERSION="~> 7.4.0"
 cordova plugin add cordova-plugin-fcm-with-dependecy-updated \
   --variable ANDROID_DEFAULT_NOTIFICATION_ICON="@mipmap/ic_launcher" \
   --variable ANDROID_FIREBASE_BOM_VERSION="26.0.0" \
   --variable ANDROID_GOOGLE_SERVICES_VERSION="4.3.4" \
   --variable ANDROID_GRADLE_TOOLS_VERSION="4.1.0" \
-  --variable IOS_FIREBASE_MESSAGING_VERSION="~> 7.4.0"
+  --variable IOS_FIREBASE_MESSAGING_VERSION="10.29.0"
 ```
 
 #### Ionic
@@ -94,12 +95,14 @@ Complete:
 ```sh
 npm install -g cordova@latest # Version 9 or higher required
 npm uninstall @ionic-native/fcm # Ionic support is included and conflicts with @ionic-native's implementation.
+#ATW was  --variable IOS_FIREBASE_MESSAGING_VERSION="~> 7.4.0"
+
 ionic cordova plugin add cordova-plugin-fcm-with-dependecy-updated \
   --variable ANDROID_DEFAULT_NOTIFICATION_ICON="@mipmap/ic_launcher" \
-  --variable ANDROID_FIREBASE_BOM_VERSION="26.0.0" \
-  --variable ANDROID_GOOGLE_SERVICES_VERSION="4.3.4" \
-  --variable ANDROID_GRADLE_TOOLS_VERSION="4.1.0" \
-  --variable IOS_FIREBASE_MESSAGING_VERSION="~> 7.4.0"
+  --variable ANDROID_FIREBASE_BOM_VERSION="33.1.16" \
+  --variable ANDROID_GOOGLE_SERVICES_VERSION="4.4.3" \
+  --variable ANDROID_GRADLE_TOOLS_VERSION="4.13.0" \
+  --variable IOS_FIREBASE_MESSAGING_VERSION="11.15.0"
 ```
 
 ## Push Payload Configuration

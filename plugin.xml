@@ -36,13 +36,28 @@
 	<!-- ANDROID CONFIGURATION -->
 	<platform name="android">
 		<preference name="ANDROID_DEFAULT_NOTIFICATION_ICON" default="@mipmap/ic_launcher" />
-		<preference name="ANDROID_FCM_VERSION" default="21.0.0" />
-		<preference name="ANDROID_FIREBASE_BOM_VERSION" default="26.0.0" />
-		<preference name="ANDROID_GOOGLE_SERVICES_VERSION" default="4.3.4" />
-		<preference name="ANDROID_GRADLE_TOOLS_VERSION" default="4.1.0" />
+
+		<!-- ATW the following 2 versions for FCM and FIREBASE_BOM are taken from the April 11, 2024 release that is the last release targeting Android 13, SDK 33
+		https://firebase.google.com/support/release-notes/android -->
+
+		<preference name="ANDROID_FCM_VERSION" default="24.0.0" /> <!-- this is the version packaged inside FIREBASE_BOM, was "21.0.0" /> -->
+		<preference name="ANDROID_FIREBASE_BOM_VERSION" default="33.1.1" /> <!-- ATW was "26.0.0" /> -->
+
+		<!-- this is the Google Services gradle plugin version number, at time of writing latest was 4.4.2
+		but I suspect that Cordova-Android is setting it to 4.3.15 as cant find any other reference to this version number -->
+
+		<!-- ATW 09 Jul 2025 removed this preference because google services is now included in cordova-androoid@14.0.0 -->
+		<!-- <preference name="ANDROID_GOOGLE_SERVICES_VERSION" default="4.3.15" /> ATW was "4.3.4" /> -->
+
+		<preference name="ANDROID_GRADLE_TOOLS_VERSION" default="8.7.3" /> <!-- ATW was "4.1.0" /> -->
+
+		<!-- Added POST_NOTIFICATION permission request -->
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.POST_NOTIFICATION"/>
+		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<activity android:name="com.gae.scaffolder.plugin.FCMPluginActivity" android:launchMode="singleTop">
+			<activity android:name="com.gae.scaffolder.plugin.FCMPluginActivity" android:launchMode="singleTop" android:exported="true">
 				<intent-filter>
 					<action android:name="FCM_PLUGIN_ACTIVITY" />
 					<category android:name="android.intent.category.DEFAULT" />
@@ -50,12 +65,14 @@
 			</activity>
 			<service 
 				android:name="com.gae.scaffolder.plugin.MyFirebaseMessagingService"
-				android:stopWithTask="false">
+				android:stopWithTask="false" android:exported="false">
 				<intent-filter>
 					<action android:name="com.google.firebase.MESSAGING_EVENT"/>
 				</intent-filter>
 			</service>
-			<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="$ANDROID_DEFAULT_NOTIFICATION_ICON" />
+			<meta-data android:name="com.google.firebase.messaging.default_notification_icon"  android:resource="$ANDROID_DEFAULT_NOTIFICATION_ICON" />
+			<!-- <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/colorAccent" />
+			<meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:resource="@string/default_notification_channel_id" /> -->
 		</config-file>
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="FCMPlugin">
@@ -80,7 +97,7 @@
 
 	<!-- IOS CONFIGURATION -->
 	<platform name="ios">
-		<preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 7.4.0" />
+		<preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 11.15.0" /> <!-- ATW 04/07/2024 (tmp remvoed 10.28.0) was 7.4.0-->
 		<config-file target="config.xml" parent="/*">
 			<feature name="FCMPlugin">
 				<param name="ios-package" value="FCMPlugin"/>
@@ -103,7 +120,7 @@
 			<false/>
 		</config-file>
 
-		<resource-file src="src/ios/Assets/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
+		<resource-file src="src/ios/Assets/GoogleService-Info.plist" target="GoogleService-Info.plist" />
 
 		<header-file src="src/ios/FCMPlugin.h" />
 		<source-file src="src/ios/FCMPlugin.m" />
@@ -120,10 +137,10 @@
 		<!-- FIREBASE COCOAPODS-->
 		<podspec>
 			<config>
-                <source url="https://github.com/CocoaPods/Specs.git"/>
+                <source url="https://cdn.cocoapods.org/"/>
 			</config>
 			<pods>
-				<pod name="Firebase/Messaging" spec="$IOS_FIREBASE_MESSAGING_VERSION"/>
+				<pod name="FirebaseMessaging" spec="$IOS_FIREBASE_MESSAGING_VERSION"/>
 			</pods>
 		</podspec>
 	</platform>
@@ -131,5 +148,6 @@
 	<!-- COPY FCM CONFIG FILES TO PLATFORM BEFORE COMPILING -->
 	<hook src="scripts/copy_google_service_files.js" type="after_prepare" />
 	<hook src="scripts/copy_google_service_files.js" type="after_plugin_add" />
-	<hook src="scripts/install_ionic_dependencies.bat" type="after_plugin_install" />
+	<!-- ATW 24/06/2024 removed this line as installing the ionic additions fails -->
+	<!-- <hook src="scripts/install_ionic_dependencies.bat" type="after_plugin_install" /> -->
 </plugin>
