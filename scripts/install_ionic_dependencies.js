@@ -4,6 +4,9 @@ const DEST_PATH = process.argv[2];
 const shouldInstallIonicDependencies = function () {
     const fs = require('fs');
     const packageFilePath = `${process.cwd()}/../../../package.json`;
+    helpers.logWarning(`cwd=${process.cwd()}`);
+    helpers.logWarning(packageFilePath);
+
     if (!helpers.fileExists(packageFilePath)) {
         helpers.logWarning('package.json was not found.');
         helpers.logWarning('Ionic dependencies omission cannot be safely skipped.');
@@ -11,7 +14,9 @@ const shouldInstallIonicDependencies = function () {
     }
     let packageDataString;
     try {
+        helpers.logWarning('about to read package file');
         packageDataString = fs.readFileSync(packageFilePath);
+        helpers.logWarning(' package file read complete');
     } catch (e) {
         helpers.logWarning('package.json found is unreadable.', e);
         helpers.logWarning('Ionic dependencies omission cannot be safely skipped.');
@@ -34,6 +39,7 @@ const shouldInstallIonicDependencies = function () {
 
 const installIonicDependencies = function () {
     const path = require('path');
+    helpers.logWarning(`cur dir=${path.dirname(process.cwd())}, DEST_PATH=${DEST_PATH}`);
     const fullDestPath = `${path.dirname(process.cwd())}/${DEST_PATH}`;
     try {
         process.chdir(fullDestPath);
