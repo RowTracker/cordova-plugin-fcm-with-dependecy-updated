@@ -2,6 +2,7 @@ declare var window: {
     cordova: {
         exec: Function
     }
+    newPromiseTO: Function
 }
 
 /**
@@ -12,9 +13,17 @@ declare var window: {
  *
  * @returns {Promise<R>} Returns from the async native call the type expected
  */
-export const execAsPromise = <R>(command: string, args: unknown[] = []): Promise<R> =>
-    new Promise<R>(
-        (resolve: (value: R | PromiseLike<R>) => void, reject: (reason?: any) => void) => {
+export const execAsPromise = <R>(command: string, args: unknown[] = []): Promise<R> => {
+    if (window.newPromiseTO) {
+        return window.newPromiseTO(command, 'FCMPlugin',
+            (resolve: (value: R | PromiseLike<R>) => void, reject: (reason?: any) => void) => {
+                window.cordova.exec(resolve, reject, 'FCMPlugin', command, args)
+            }
+        );
+    } else {
+        //Row tracker not initialised yet so use JS Promise
+        return new Promise((resolve: (value: R | PromiseLike<R>) => void, reject: (reason?: any) => void) => {
             window.cordova.exec(resolve, reject, 'FCMPlugin', command, args)
-        }
-    )
+        });        
+    }
+}

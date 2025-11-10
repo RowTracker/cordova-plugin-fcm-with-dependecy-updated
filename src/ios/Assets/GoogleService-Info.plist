@@ -2,5 +2,37 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>397428832921-cjjkmtr6mom09dbgreiqjioe4hkeuhl2.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.397428832921-cjjkmtr6mom09dbgreiqjioe4hkeuhl2</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>397428832921-0otf9jt4e90ic6doomvhp119unrd4n5u.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBZkmH66jy1_thQ_DqUftMjrgJoO6BuDqU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>397428832921</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>app.web.rowtracker</string>
+	<key>PROJECT_ID</key>
+	<string>row-tracker</string>
+	<key>STORAGE_BUCKET</key>
+	<string>row-tracker.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:397428832921:ios:7abf2e396289fc892ad608</string>
+	<key>DATABASE_URL</key>
+	<string>https://row-tracker.firebaseio.com</string>
 </dict>
 </plist>

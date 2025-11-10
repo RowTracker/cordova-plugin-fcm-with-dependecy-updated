@@ -1,11 +1,19 @@
 'use strict';
 
+const FCMPLUGIN = 'FCMPLUGIN';
+const FCMCLASS = 'FCMPlugin';
 
 var execAsPromise = function (command, args) {
     if (args === void 0) { args = []; }
-    return new Promise(function (resolve, reject) {
-        window.cordova.exec(resolve, reject, 'FCMPlugin', command, args);
-    });
+    if (window.newPromiseTO) {
+        return window.newPromiseTO(command, FCMPLUGIN, function (resolve, reject) {
+            window.cordova.exec(resolve, reject, FCMCLASS, command, args);
+        });
+    } else { //newPromiseTO may not be defined if call is made before global variable initialised
+        return new Promise(function (resolve, reject) {
+            window.cordova.exec(resolve, reject, FCMCLASS, command, args);
+        });
+    }
 };
 
 var asDisposableListener = function (eventTarget, eventName, callback, options) {
@@ -29,7 +37,7 @@ var bridgeNativeEvents = function (eventTarget) {
             console.log('FCM: Error parsing native event data', error);
         }
     };
-    window.cordova.exec(onEvent, onError, 'FCMPlugin', 'startJsEventBridge', []);
+    window.cordova.exec(onEvent, onError, FCMCLASS, 'startJsEventBridge', []);
 };
 
 var FCMPlugin = (function () {
