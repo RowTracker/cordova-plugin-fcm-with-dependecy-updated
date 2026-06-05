@@ -53,7 +53,7 @@
 
 		<!-- Added POST_NOTIFICATION permission request -->
 		<config-file target="AndroidManifest.xml" parent="/manifest">
-			<uses-permission android:name="android.permission.POST_NOTIFICATION"/>
+			<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
@@ -139,7 +139,7 @@
 			<config>
                 <source url="https://cdn.cocoapods.org/"/>
 			</config>
-			<pods>
+			<pods use-frameworks="true">
 				<pod name="FirebaseMessaging" spec="$IOS_FIREBASE_MESSAGING_VERSION"/>
 			</pods>
 		</podspec>
